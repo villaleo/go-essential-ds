@@ -14,43 +14,31 @@ func New[E any](cap uint64) *Queue[E] {
 	}
 }
 
-func (q *Queue[E]) Enqueue(item E) error {
+func (q *Queue[E]) Enqueue(item E) (ok bool) {
 	if len(q.items) == int(q.capacity) {
-		return FullQueueException{}
+		return false
 	}
 
 	q.items = append(q.items, item)
 	q.Size++
-	return nil
+	return true
 }
 
-func (q *Queue[E]) Dequeue() (out E, err error) {
+func (q *Queue[E]) Dequeue() (out E, ok bool) {
 	if len(q.items) == 0 {
-		return out, EmptyQueueException{}
+		return out, false
 	}
 
 	val := q.items[0]
 	q.items = q.items[1:]
 	q.Size--
-	return val, nil
+	return val, true
 }
 
-func (q *Queue[E]) Peek() (out E, err error) {
+func (q *Queue[E]) Peek() (out E, ok bool) {
 	if len(q.items) == 0 {
-		return out, EmptyQueueException{}
+		return out, false
 	}
 
-	return q.items[0], nil
-}
-
-type EmptyQueueException struct{}
-
-func (e EmptyQueueException) Error() string {
-	return "Queue is empty"
-}
-
-type FullQueueException struct{}
-
-func (e FullQueueException) Error() string {
-	return "Queue is full"
+	return q.items[0], true
 }
