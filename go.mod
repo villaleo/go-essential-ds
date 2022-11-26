@@ -1,4 +1,4 @@
-module go-essential-ds
+module github.com/villaleo/go-essential-ds
 
 go 1.19
 
