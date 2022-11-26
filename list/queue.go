@@ -2,22 +2,25 @@ package list
 
 type Queue[E any] struct {
 	items    []E
-	Capacity uint64
+	capacity uint64
+	Size     uint64
 }
 
 func New[E any](cap uint64) *Queue[E] {
 	return &Queue[E]{
 		items:    make([]E, 0, cap),
-		Capacity: cap,
+		capacity: cap,
+		Size:     0,
 	}
 }
 
 func (q *Queue[E]) Enqueue(item E) error {
-	if len(q.items) == int(q.Capacity) {
+	if len(q.items) == int(q.capacity) {
 		return FullQueueException{}
 	}
 
 	q.items = append(q.items, item)
+	q.Size++
 	return nil
 }
 
@@ -28,6 +31,7 @@ func (q *Queue[E]) Dequeue() (*E, error) {
 
 	val := q.items[0]
 	q.items = q.items[1:]
+	q.Size--
 	return &val, nil
 }
 
