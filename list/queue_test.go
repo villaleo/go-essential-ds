@@ -56,7 +56,7 @@ func TestDequeue_HappyPath(t *testing.T) {
 
 	val, err := queue.Dequeue()
 	assert.Nil(t, err)
-	assert.Equal(t, 10, *val)
+	assert.Equal(t, 10, val)
 }
 
 func TestDequeue_EmptyQueue(t *testing.T) {
@@ -84,7 +84,7 @@ func TestPeek_HappyPath(t *testing.T) {
 
 	val, err := queue.Dequeue()
 	assert.NotNil(t, val)
-	assert.Equal(t, *val, 10)
+	assert.Equal(t, val, 10)
 	assert.Nil(t, err)
 }
 

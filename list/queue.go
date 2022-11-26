@@ -24,23 +24,23 @@ func (q *Queue[E]) Enqueue(item E) error {
 	return nil
 }
 
-func (q *Queue[E]) Dequeue() (*E, error) {
+func (q *Queue[E]) Dequeue() (out E, err error) {
 	if len(q.items) == 0 {
-		return nil, EmptyQueueException{}
+		return out, EmptyQueueException{}
 	}
 
 	val := q.items[0]
 	q.items = q.items[1:]
 	q.Size--
-	return &val, nil
+	return val, nil
 }
 
-func (q *Queue[E]) Peek() (*E, error) {
+func (q *Queue[E]) Peek() (out E, err error) {
 	if len(q.items) == 0 {
-		return nil, EmptyQueueException{}
+		return out, EmptyQueueException{}
 	}
 
-	return &q.items[0], nil
+	return q.items[0], nil
 }
 
 type EmptyQueueException struct{}
