@@ -11,7 +11,7 @@ func TestNew(t *testing.T) {
 	want := &Queue[int]{
 		capacity: cap,
 	}
-	got := New[int](cap)
+	got := NewQueue[int](cap)
 
 	assert.NotNil(t, got)
 	assert.Equal(t, want.capacity, got.capacity)
@@ -20,7 +20,7 @@ func TestNew(t *testing.T) {
 
 func TestEnqueue_HappyPath(t *testing.T) {
 	var cap uint64 = 3
-	queue := New[int](cap)
+	queue := NewQueue[int](cap)
 
 	ok := queue.Enqueue(1)
 	assert.True(t, ok)
@@ -32,7 +32,7 @@ func TestEnqueue_HappyPath(t *testing.T) {
 
 func TestEnqueue_FullQueue(t *testing.T) {
 	var cap uint64 = 1
-	queue := New[int](cap)
+	queue := NewQueue[int](cap)
 
 	ok := queue.Enqueue(1)
 	assert.True(t, ok)
@@ -44,7 +44,7 @@ func TestEnqueue_FullQueue(t *testing.T) {
 
 func TestDequeue_HappyPath(t *testing.T) {
 	var cap uint64 = 3
-	queue := New[int](cap)
+	queue := NewQueue[int](cap)
 
 	assert.NotNil(t, queue)
 	assert.Equal(t, queue.capacity, cap)
@@ -59,7 +59,7 @@ func TestDequeue_HappyPath(t *testing.T) {
 
 func TestDequeue_EmptyQueue(t *testing.T) {
 	var cap uint64 = 3
-	queue := New[int](cap)
+	queue := NewQueue[int](cap)
 
 	assert.NotNil(t, queue)
 	assert.Equal(t, queue.capacity, cap)
@@ -71,7 +71,7 @@ func TestDequeue_EmptyQueue(t *testing.T) {
 
 func TestPeek_HappyPath(t *testing.T) {
 	var cap uint64 = 3
-	queue := New[int](cap)
+	queue := NewQueue[int](cap)
 
 	assert.NotNil(t, queue)
 	assert.Equal(t, queue.capacity, cap)
@@ -86,7 +86,7 @@ func TestPeek_HappyPath(t *testing.T) {
 
 func TestPeek_EmptyQueue(t *testing.T) {
 	var cap uint64 = 3
-	queue := New[int](cap)
+	queue := NewQueue[int](cap)
 
 	assert.NotNil(t, queue)
 	assert.Equal(t, queue.capacity, cap)
