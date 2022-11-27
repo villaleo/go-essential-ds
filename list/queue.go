@@ -7,7 +7,7 @@ type Queue[E any] struct {
 	Size     uint64
 }
 
-// New returns a pointer to a new Queue object.
+// NewQueue returns a pointer to a new Queue object.
 func NewQueue[E any](cap uint64) *Queue[E] {
 	return &Queue[E]{
 		items:    make([]E, 0, cap),
