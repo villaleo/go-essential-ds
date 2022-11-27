@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestNew(t *testing.T) {
+func TestNewQueue(t *testing.T) {
 	var cap uint64 = 10
 	want := &Queue[int]{
 		capacity: cap,
