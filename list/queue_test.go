@@ -6,91 +6,102 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+const (
+	queueCapacity uint64 = 100
+)
+
 func TestNewQueue(t *testing.T) {
-	var cap uint64 = 10
-	want := &Queue[int]{
-		capacity: cap,
-	}
-	got := NewQueue[int](cap)
+	got := NewQueue[int](queueCapacity)
 
 	assert.NotNil(t, got)
-	assert.Equal(t, want.capacity, got.capacity)
-	assert.Equal(t, got.items, make([]int, 0, cap))
+	assert.Equal(t, queueCapacity, got.capacity)
+	assert.Equal(t, uint64(0), got.Size)
 }
 
 func TestEnqueue_HappyPath(t *testing.T) {
-	var cap uint64 = 3
-	queue := NewQueue[int](cap)
+	queue := NewQueue[int](queueCapacity)
+	assert.NotNil(t, queue)
 
-	ok := queue.Enqueue(1)
-	assert.True(t, ok)
-	ok = queue.Enqueue(2)
-	assert.True(t, ok)
+	numIterations := 50
+	for i := 1; i <= numIterations; i++ {
+		// Enqueue 50 items
+		ok := queue.Enqueue(i)
+		assert.True(t, ok)
+	}
 
-	assert.Equal(t, queue.items, []int{1, 2})
+	assert.Equal(t, uint64(numIterations), queue.Size)
 }
 
 func TestEnqueue_FullQueue(t *testing.T) {
-	var cap uint64 = 1
-	queue := NewQueue[int](cap)
+	queue := NewQueue[int](queueCapacity)
+	assert.NotNil(t, queue)
 
-	ok := queue.Enqueue(1)
-	assert.True(t, ok)
-	ok = queue.Enqueue(2)
+	for i := 1; i <= int(queueCapacity); i++ {
+		// Enqueue 100 items (capacity limit)
+		ok := queue.Enqueue(i)
+		assert.True(t, ok)
+	}
+
+	// Queue is full. Attempt to add another item
+	ok := queue.Enqueue(101)
 	assert.False(t, ok)
-
-	assert.Equal(t, queue.items, []int{1})
+	assert.Equal(t, queueCapacity, queue.Size)
 }
 
 func TestDequeue_HappyPath(t *testing.T) {
-	var cap uint64 = 3
-	queue := NewQueue[int](cap)
-
+	queue := NewQueue[int](queueCapacity)
 	assert.NotNil(t, queue)
-	assert.Equal(t, queue.capacity, cap)
 
-	queue.Enqueue(10)
-	queue.Enqueue(20)
+	// Add 50 items to the queue
+	numIterations := 50
+	for i := 1; i <= numIterations; i++ {
+		ok := queue.Enqueue(i)
+		assert.True(t, ok)
+	}
 
-	val, ok := queue.Dequeue()
-	assert.True(t, ok)
-	assert.Equal(t, 10, val)
+	// Dequeue each item
+	for i := 1; i <= numIterations; i++ {
+		val, ok := queue.Dequeue()
+		assert.True(t, ok)
+		assert.Equal(t, i, val)
+	}
+
+	assert.Equal(t, uint64(0), queue.Size)
 }
 
 func TestDequeue_EmptyQueue(t *testing.T) {
-	var cap uint64 = 3
-	queue := NewQueue[int](cap)
-
+	queue := NewQueue[int](queueCapacity)
 	assert.NotNil(t, queue)
-	assert.Equal(t, queue.capacity, cap)
 
+	// Queue is empty. Attempt to remove another item
 	_, ok := queue.Dequeue()
 	assert.False(t, ok)
-	assert.Equal(t, queue.Size, uint64(0))
+	assert.Equal(t, uint64(0), queue.Size)
 }
 
 func TestPeek_HappyPath(t *testing.T) {
-	var cap uint64 = 3
-	queue := NewQueue[int](cap)
-
+	queue := NewQueue[int](queueCapacity)
 	assert.NotNil(t, queue)
-	assert.Equal(t, queue.capacity, cap)
 
-	queue.Enqueue(10)
-	queue.Enqueue(20)
+	// Add 100 items to the queue
+	numIterations := 100
+	for i := 1; i <= numIterations; i++ {
+		ok := queue.Enqueue(i)
+		assert.True(t, ok)
+	}
 
-	val, ok := queue.Dequeue()
+	// Peek the first item in queue (should be 1)
+	val, ok := queue.Peek()
 	assert.True(t, ok)
-	assert.Equal(t, val, 10)
+	assert.Equal(t, 1, val)
 }
 
 func TestPeek_EmptyQueue(t *testing.T) {
-	var cap uint64 = 3
-	queue := NewQueue[int](cap)
-
+	queue := NewQueue[int](queueCapacity)
 	assert.NotNil(t, queue)
-	assert.Equal(t, queue.capacity, cap)
 
-	_, ok := queue.Dequeue()
+	// Attempt to peek at empty queue
+	_, ok := queue.Peek()
 	assert.False(t, ok)
+	assert.Equal(t, uint64(0), queue.Size)
 }

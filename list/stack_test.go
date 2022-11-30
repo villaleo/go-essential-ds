@@ -8,106 +8,100 @@ import (
 
 const (
 	stackCapacity uint64 = 100
-	zero          uint64 = 0
 )
 
 func TestNewStack(t *testing.T) {
 	var capacity uint64 = 100
-	got := NewStack[int](capacity)
+	stack := NewStack[int](capacity)
 
-	assert.NotNil(t, got)
-	assert.Equal(t, capacity, got.Capacity)
-	assert.Equal(t, zero, got.Size)
+	assert.NotNil(t, stack)
+	assert.Equal(t, capacity, stack.Capacity)
+	assert.Equal(t, uint64(0), stack.Size)
 }
 
 func TestPush(t *testing.T) {
-	var (
-		expectedSize  uint64 = 50
-		numIterations int    = 50
-	)
+	stack := NewStack[int](stackCapacity)
+	assert.NotNil(t, stack)
 
-	got := NewStack[int](stackCapacity)
-	assert.NotNil(t, got)
-
-	var ok bool
+	numIterations := 50
 	for i := 1; i <= numIterations; i++ {
 		// Assert all pushes are successful
-		ok = got.Push(i)
+		ok := stack.Push(i)
 		assert.True(t, ok)
 	}
 
-	assert.Equal(t, expectedSize, got.Size)
+	assert.Equal(t, uint64(numIterations), stack.Size)
 }
 
 func TestPush_FullStack(t *testing.T) {
-	var numIterations int = 100
-	got := NewStack[int](stackCapacity)
-	assert.NotNil(t, got)
+	stack := NewStack[int](stackCapacity)
+	assert.NotNil(t, stack)
 
-	var ok bool
+	numIterations := 100
 	for i := 1; i <= numIterations; i++ {
-		ok = got.Push(i)
+		ok := stack.Push(i)
 		assert.True(t, ok)
 	}
 
 	// Stack is full. Try to add one more item
-	ok = got.Push(101)
+	ok := stack.Push(101)
 	assert.False(t, ok)
-	assert.Equal(t, uint64(numIterations), got.Size)
+	assert.Equal(t, uint64(numIterations), stack.Size)
 }
 
 func TestPop(t *testing.T) {
-	var numIterations = 50
-	got := NewStack[int](stackCapacity)
-	assert.NotNil(t, got)
+	stack := NewStack[int](stackCapacity)
+	assert.NotNil(t, stack)
 
 	// Insert 50 items
-	var ok bool
+	numIterations := 50
 	for i := 1; i <= numIterations; i++ {
-		ok = got.Push(i)
+		ok := stack.Push(i)
 		assert.True(t, ok)
 	}
 
 	// Remove all items
 	for i := 1; i <= numIterations; i++ {
-		val, ok := got.Pop()
+		val, ok := stack.Pop()
 		assert.Equal(t, val, numIterations-i+1)
 		assert.True(t, ok)
 	}
 
-	assert.Equal(t, zero, got.Size)
+	assert.Equal(t, uint64(0), stack.Size)
 }
 
 func TestPop_EmptyStack(t *testing.T) {
-	got := NewStack[int](stackCapacity)
-	assert.NotNil(t, got)
+	stack := NewStack[int](stackCapacity)
+	assert.NotNil(t, stack)
 
 	// Attempt to pop from empty stack
-	_, ok := got.Pop()
+	_, ok := stack.Pop()
 	assert.False(t, ok)
 }
 
 func TestPeek(t *testing.T) {
-	got := NewStack[int](stackCapacity)
-	assert.NotNil(t, got)
+	stack := NewStack[int](stackCapacity)
+	assert.NotNil(t, stack)
 
 	// Insert some items
-	numItems := 35
-	for i := 1; i <= numItems; i++ {
-		ok := got.Push(i)
+	numIterations := 35
+	for i := 1; i <= numIterations; i++ {
+		ok := stack.Push(i)
 		assert.True(t, ok)
 	}
 
 	// Peek at the last item in the stack
-	val, ok := got.Peek()
+	val, ok := stack.Peek()
 	assert.True(t, ok)
-	assert.Equal(t, numItems, val)
+	assert.Equal(t, numIterations, val)
 }
 
 func TestPeek_EmptyStack(t *testing.T) {
-	got := NewStack[int](stackCapacity)
-	assert.NotNil(t, got)
+	stack := NewStack[int](stackCapacity)
+	assert.NotNil(t, stack)
 
-	_, ok := got.Peek()
+	// Attempt to peek at empty stack
+	_, ok := stack.Peek()
 	assert.False(t, ok)
+	assert.Equal(t, uint64(0), stack.Size)
 }
